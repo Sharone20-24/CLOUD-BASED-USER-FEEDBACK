@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoundFlow | Sign Up</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background: #121212;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: #1a1a1a;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1DB954;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aaa;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            background: #2a2a2a;
+            border: 1px solid #333;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #1DB954;
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #1DB954;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background: #1aa34a;
+        }
+        
+        .api-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #2a2a2a;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #aaa;
+        }
+        
+        .error {
+            color: #ff4444;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .success {
+            color: #1DB954;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">SoundFlow</div>
+        
+        <form id="signupForm">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" placeholder="Enter your name" required>
+                <div class="error" id="nameError">Please enter a valid name</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+                <div class="error" id="emailError">Please enter a valid email</div>
+            </div>
+            
+            <button type="submit">Create Account</button>
+            
+            <div class="success" id="successMessage">Account created! Redirecting...</div>
+        </form>
+        
+        <div class="api-info">
+            <strong>API Endpoint:</strong> https://api.example.com/signup<br><br>
+            <strong>Data sent:</strong> name, email, timestamp<br><br>
+            <em>This demo sends data to a mock API endpoint</em>
+        </div>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_URL = 'https://api.example.com/signup';
+        // Replace with your actual API endpoint
+        
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            
+            // Hide any previous errors
+            hideErrors();
+            
+            // Basic validation
+            if (!validateForm(name, email)) {
+                return;
+            }
+            
+            try {
+                // Prepare data for API
+                const userData = {
+                    name: name,
+                    email: email,
+                    signupDate: new Date().toISOString(),
+                    source: 'web_signup'
+                };
+                
+                // Show loading state
+                const submitBtn = e.target.querySelector('button');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Creating Account...';
+                submitBtn.disabled = true;
+                
+                // Send to API
+                const response = await sendToAPI(userData);
+                
+                // Show success message
+                document.getElementById('successMessage').style.display = 'block';
+                
+                // Reset form
+                this.reset();
+                
+                // Show music app after 2 seconds
+                setTimeout(() => {
+                    showMusicApp(name, email);
+                }, 2000);
+                
+            } catch (error) {
+                // Show error
+                alert('Error creating account: ' + error.message);
+            }
+        });
+        
+        // Function to send data to API
+        async function sendToAPI(data) {
+            // This is a mock API call
+            // In a real app, you would use fetch() or axios
+            
+            console.log('Sending to API:', API_URL);
+            console.log('Data:', data);
+            
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            // Mock successful response
+            return {
+                success: true,
+                userId: Math.floor(Math.random() * 10000) + 1000,
+                message: 'User created successfully'
+            };
+            
+            // Real API implementation would look like:
+            /*
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+            
+            if (!response.ok) {
+                throw new Error('API request failed');
+            }
+            
+            return await response.json();
+            */
+        }
+        
+        // Form validation
+        function validateForm(name, email) {
+            let valid = true;
+            
+            if (name.length < 2) {
+                document.getElementById('nameError').style.display = 'block';
+                valid = false;
+            }
+            
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                document.getElementById('emailError').style.display = 'block';
+                valid = false;
+            }
+            
+            return valid;
+        }
+        
+        // Hide error messages
+        function hideErrors() {
+            document.getElementById('nameError').style.display = 'none';
+            document.getElementById('emailError').style.display = 'none';
+        }
+        
+        // Show music app (simple HTML page)
+        function showMusicApp(name, email) {
+            const musicAppHTML = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>SoundFlow Music Player</title>
+                    <style>
+                        * { margin: 0; padding: 0; box-sizing: border-box; }
+                        body { 
+                            background: #121212; 
+                            color: white; 
+                            font-family: Arial, sans-serif;
+                            padding: 20px;
+                        }
+                        .header {
+                            background: #1DB954;
+                            padding: 20px;
+                            border-radius: 10px;
+                            margin-bottom: 30px;
+                        }
+                        .welcome {
+                            font-size: 1.8rem;
+                            margin-bottom: 10px;
+                        }
+                        .player {
+                            background: #1a1a1a;
+                            padding: 30px;
+                            border-radius: 10px;
+                            margin-bottom: 20px;
+                        }
+                        .song-list {
+                            background: #2a2a2a;
+                            padding: 20px;
+                            border-radius: 10px;
+                        }
+                        .song {
+                            padding: 15px;
+                            border-bottom: 1px solid #333;
+                            display: flex;
+                            align-items: center;
+                            gap: 15px;
+                        }
+                        .song:last-child {
+                            border-bottom: none;
+                        }
+                        .play-btn {
+                            background: #1DB954;
+                            color: white;
+                            border: none;
+                            border-radius: 50%;
+                            width: 40px;
+                            height: 40px;
+                            cursor: pointer;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1 class="welcome">Welcome to SoundFlow, ${name}!</h1>
+                        <p>Email: ${email}</p>
+                        <p>Premium Account Active</p>
+                    </div>
+                    
+                    <div class="player">
+                        <h2>Now Playing</h2>
+                        <p style="margin-top: 10px; color: #aaa;">Song Name - Artist</p>
+                        <p style="margin-top: 20px; color: #1DB954;">00:00 / 03:45</p>
+                    </div>
+                    
+                    <div class="song-list">
+                        <h3 style="margin-bottom: 15px;">Your Playlist</h3>
+                        <div class="song">
+                            <button class="play-btn">▶</button>
+                            <div>
+                                <strong>Blinding Lights</strong>
+                                <p style="color: #aaa; font-size: 0.9rem;">The Weeknd</p>
+                            </div>
+                        </div>
+                        <div class="song">
+                            <button class="play-btn">▶</button>
+                            <div>
+                                <strong>As It Was</strong>
+                                <p style="color: #aaa; font-size: 0.9rem;">Harry Styles</p>
+                            </div>
+                        </div>
+                        <div class="song">
+                            <button class="play-btn">▶</button>
+                            <div>
+                                <strong>Stay</strong>
+                                <p style="color: #aaa; font-size: 0.9rem;">The Kid LAROI, Justin Bieber</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p style="margin-top: 30px; color: #aaa; text-align: center;">
+                        This is a demo music player. Signup data was sent to: ${API_URL}
+                    </p>
+                </body>
+                </html>
+            `;
+            
+            // Open music app in new tab
+            const newWindow = window.open();
+            newWindow.document.write(musicAppHTML);
+            newWindow.document.close();
+        }
+    </script>
+</body>
+</html>
