@@ -7,10 +7,6 @@ on:
     paths:
       - "index.html"
 
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -19,12 +15,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials using OIDC
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::812015287570:role/PROJECT
+          aws-access-key-id: ${{ secrets.AKIA32D7B7UJJELWFNDP }}
+          aws-secret-access-key: ${{ secrets.rm/LMJJOwOrho+5l5FVfofMuqxD0j45tCe0x8ss8 }}
           aws-region: eu-north-1
 
       - name: Upload index.html to S3
         run: |
-          aws s3 cp index.html s3://${{ secrets.S3_BUCKET_NAME }}/index.html
+          aws s3 cp index.html s3://prjt-5/index.html
