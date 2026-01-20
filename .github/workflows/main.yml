@@ -1,4 +1,4 @@
-name: Deploy web.html to S3
+name: Deploy index.html to S3
 
 on:
   push:
@@ -22,7 +22,7 @@ jobs:
       - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::812015287570:role/Projectrole
+          role-to-assume: arn:aws:iam::812015287570:role/PROJECT
           aws-region: eu-north-1
 
       - name: Upload index.html to S3
