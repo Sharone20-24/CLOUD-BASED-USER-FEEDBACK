@@ -1,0 +1,37 @@
+name: Deploy Frontend to S3
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "index.html"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Configure AWS credentials using OIDC
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::812015287570:role/AWS-4TH-PROJECT
+          aws-region: eu-north-1   # must match your S3 bucket region
+
+      # 3️⃣ Verify role assumption
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
+
+      # 4️⃣ Upload index.html to S3
+      - name: Deploy index.html to S3
+        run: |
+          aws s3 cp index.html s3://${{ secrets.sharone }}/index.html
