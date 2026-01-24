@@ -27,4 +27,4 @@ jobs:
 
       - name: Deploy frontend to S3
         run: |
-          aws s3 sync index.html s3://${{ secrets.sharone }} --delete
+          aws s3 sync index.html s3:sharone//${{ secrets.sharone }} --delete
