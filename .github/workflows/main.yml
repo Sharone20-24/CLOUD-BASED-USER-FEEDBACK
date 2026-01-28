@@ -22,7 +22,7 @@ jobs:
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::812015287570:role/AWS-4TH-PROJECT
+          role-to-assume: arn:aws:iam::812015287570:role/PRJ-4-GIT-ROLE
           aws-region: eu-north-1
 
       - name: Deploy frontend to S3
